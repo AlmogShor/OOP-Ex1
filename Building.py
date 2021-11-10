@@ -1,3 +1,5 @@
+
+
 class Building:
     def __init__(self, minFloor, maxFloor):
         self.min_floor = minFloor
