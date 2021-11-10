@@ -1,81 +1,65 @@
-import csv
-import json  # This is a sample Python script.
-import struct
-import sys
-import importlib
+import csv , json  # This is a sample Python script.
+
+
 from Building import Building
-from callForElevator import callForElevator
 from Elevator import Elevator
-import pandas as pd
+from CallForElevator import CallForElevator
 
 
-def allocate(callList, b):
-    calls = []
+def allocate(callList : CallForElevator, B : Building, output):
+    out_file = open("out.csv", "w", newline="")
+    writer = csv.writer(out_file)
+    mission=0
+    onboard=0
+    endtime=0
+    bestelv=-1
+    boazidiot=B.list_elvators[0].id
+
     for i in callList:
         chosenElev = -1
-        minTime = float(sys.float_info.max)
-        for j in b.list_elvators:
-            tmpTime = TimePeople(j, i)
-            print()
-            if (tmpTime <= minTime):
-                minTime = tmpTime
-                chosenElev = j.id
+        minTime = 1500
 
-        b.list_elvators[chosenElev] = i
-        calls.append(chosenElev)
-    return calls
+        if(i.src<B.minFloor or i.src>B.maxFloor or i.dst<B.minFloor or i.dst>B.maxFloor):
+            i.data[5]=-1
+            writer.writerow(i.data)
+            continue
+
+        for j in B.list_elvators:
 
 
-def TimePeople(elev, call: callForElevator) -> float:
-    minTime = float(sys.float_info.max)
-    tmpTime = 0
-    print(elev.speed)
-    if elev.isEmpty():
-        # +time to move to the call floor
-        tmpTime = + float(Elevator(elev).openTime) + float(Elevator(elev).closeTime)
-        print(elev.speed)
-        tmpTime = + Elevator(elev).startTime + abs(float(call.src) - float(call.dst)) / float(elev.speed)
-        tmpTime = + elev.stopTime + elev.openTime
-        if (tmpTime <= float(minTime)):
-            minTime = tmpTime
-        return minTime
 
-    new = elev.lastCall()
-    current = new
-    if (call.src > current.src and call.dst < current.dst):
-        time = call.callTime - current.callTime
-        tmpTime = elev.startTime + abs(
-            current.src - call.src) / elev.speed + elev.openTime + elev.closeTime + elev.stopTime
-        if (time <= tmpTime):
-            tmpTime = tmpTime + elev.startTime + abs(
-                current.src - current.dst) / elev.speed + elev.openTime + elev.closeTime + elev.stopTime
-            if (tmpTime <= minTime):
-                minTime = tmpTime
+            if(timecheck(i,j)<minTime):
+                bestelv=j.id
+                minTime=timecheck(i,j)
+                onboard=minTime
+                endtime=minTime+calltime(i, j)
 
-    if (call.src < current.src and call.dst > current.dst):
-        time = call.callTime - current.callTime
-        tmpTime = elev.startTime + abs(
-            current.src - call.src) / elev.speed + elev.openTime + elev.closeTime + elev.stopTime
-        if (time <= tmpTime):
-            tmpTime = tmpTime + elev.startTime + abs(
-                current.src - current.dst) / elev.speed + elev.openTime + elev.closeTime + elev.stopTime
-            if (tmpTime <= minTime):
-                minTime = tmpTime
-
-    tmpTime = elev.startTime + abs(current.dst - call.src) / elev.speed + elev.openTime + elev.closeTime + elev.stopTime
-    timeofthelastcall = current.callTime + elev.startTime + abs(
-        current.dst - current.src) / elev.speed + elev.openTime + elev.closeTime + elev.stopTime
-    time = tmpTime + timeofthelastcall
-    tmpTime2 = elev.startTime + abs(call.dst - call.src) / elev.speed + elev.openTime + elev.closeTime + elev.stopTime
-    if (time >= call.callTime):
-        tmpTime = tmpTime + elev.startTime + abs(
-            current.src - current.dst) / elev.speed + elev.openTime + elev.closeTime + elev.stopTime
-        if (tmpTime <= minTime):
-            minTime = tmpTime
-    return minTime
+        i.data[5]=bestelv
+        i.data[7]=onboard
+        i.data[8]=endtime
+        B.list_elvators[bestelv-boazidiot].calls.append(i)
+        writer.writerow(i.data)
+    out_file.close()
 
 
-def Ex1(bld, calls, output):
+def timecheck(call : CallForElevator,elev : Elevator):
+    if(elev.calls):
+        if (elev.calls[-1].data[8] > call.callTime):
+            return elev.calls[-1].data[8]+elev.closeTime+elev.startTime+(abs(elev.calls[-1].data[3]-call.src))/elev.speed+elev.stopTime+elev.openTime
+        else:
+            if(elev.calls[-1].data[3]==call.src):
+                return call.callTime
+            return call.callTime+elev.closeTime+elev.startTime+(abs(elev.calls[-1].data[3]-call.src))/elev.speed+elev.stopTime+elev.openTime
+    else:
+        if(call.src==0):
+            return call.callTime
+        return call.callTime+elev.closeTime+elev.startTime+(abs(0-call.src))/elev.speed+elev.stopTime+elev.openTime
+
+def calltime(call : CallForElevator, elev : Elevator):
+    return elev.closeTime + elev.startTime + (abs(call.dst - call.src)) / elev.speed + elev.stopTime + elev.openTime
+
+
+def Ex1(bld , calls , output):
     # Opening json file
     f = open(bld)
     data = json.load(f)
@@ -91,24 +75,23 @@ def Ex1(bld, calls, output):
         B.list_elvators.append(elev)
 
     # print(B)
-    # Closing the json file
+    #Closing the json file
     f.close()
     # Opening CSV file
     c = open(calls)
     csvreader = csv.reader(c)
-    # Creating the callForElevators objects
+    #Creating the callForElevators objects
     idx = 0
-    callsList = []
+    callsList =[]
     for row in csvreader:
-        call = callForElevator(row[1], row[2], row[3], idx)
+        call = CallForElevator(row[1], row[2], row[3], idx)
         idx = +1
         callsList.append(call)
 
-    b = allocate(callsList, B)
-    print(b)
-    # Closing the CSV file
+    allocate(callsList, B, output)
+    #Closing the CSV file
     c.close()
 
 
 if __name__ == '__main__':
-    Ex1('f.json', 'Calls_a.csv', 'ex1.csv')
+    Ex1('data\\Ex1_input\\Ex1_Buildings\\B3.json', 'data\\Ex1_input\\Ex1_calls\\Calls_a.csv', 'out.csv')
