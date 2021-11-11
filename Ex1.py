@@ -10,32 +10,39 @@ def allocate(calllist: CallForElevator, b: Building, output):
     out_file = open(output, "w", newline="")
     writer = csv.writer(out_file)
     # mission = 0
+    # time the person enter the elevator
     onboard = 0
+    # end of call time
     endtime = 0
+    # save the best elevator
     bestelv = -1
+    # elevators id dont start with 0
     boazidiot = b.list_elvators[0].id
 
+    # for every call in the call list
     for i in calllist:
-        # chosenElev = -1
         mintime = 1500
-
+        # if there is a call outside the building floors
         if i.src < b.minFloor or i.src > b.maxFloor or i.dst < b.minFloor or i.dst > b.maxFloor:
             i.data[5] = -1
             writer.writerow(i.data)
             continue
-
+        # for every elevator in the building
         for j in b.list_elvators:
-
+            # for the current elevator check the time to the call
             if timecheck(i, j) < mintime:
                 bestelv = j.id
                 mintime = timecheck(i, j)
-                onboard = mintime
-                endtime = mintime + calltime(i, j)
+                onboard = int(mintime)+1
+                endtime = onboard + calltime(i, j)
 
-        i.data[5] = bestelv
+        # data i want to write in the csv
+        i.data[5] = bestelv - boazidiot
         i.data[7] = onboard
         i.data[8] = endtime
+        # added call to the elevator call list
         b.list_elvators[bestelv - boazidiot].calls.append(i)
+        # write in the csv
         writer.writerow(i.data)
     out_file.close()
 
@@ -94,4 +101,4 @@ def ex1(bld, calls, output):
 
 
 if __name__ == '__main__':
-    ex1('data\\Ex1_input\\Ex1_Buildings\\B3.json', 'data\\Ex1_input\\Ex1_calls\\Calls_a.csv', 'out.csv')
+    ex1('data\\Ex1_input\\Ex1_Buildings\\B2.json', 'data\\Ex1_input\\Ex1_calls\\Calls_a.csv', 'out.csv')
