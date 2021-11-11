@@ -53,6 +53,8 @@ from Elevator import Elevator
 #     if tmpTime <= min_time:
 #         min_time = tmpTime
 # return min_time
+
+
 def allocate(call_list: call_for_elevator, bld: Building, output):
     out_file = open(output, "w", newline="")
     writer = csv.writer(out_file)
@@ -66,7 +68,7 @@ def allocate(call_list: call_for_elevator, bld: Building, output):
         min_time = float(sys.float_info.max)
 
         if i.src < bld.min_floor or i.src > bld.max_floor or i.dst < bld.min_floor or i.dst > bld.max_floor:
-            i.data[5] = -1
+            i.data[5] = chosen_elev
             writer.writerow(i.data)
             continue
 
