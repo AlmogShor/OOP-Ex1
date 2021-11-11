@@ -1,5 +1,7 @@
 import csv
 import json
+import math
+import sys
 
 from Building import Building
 from Elevator import Elevator
@@ -16,22 +18,46 @@ def allocate(call_list: CallForElevator, b: Building, output):
     # save the best elevator
     best_elv = -1
     # elevators id dont start with 0
+    case = 0
 
     # for every call in the call list
     for i in call_list:
-        min_time = 1500
+        min_time = sys.float_info.max
         # if there is a call outside the building floors
         if i.src < b.min_floor or i.src > b.max_floor or i.dst < b.min_floor or i.dst > b.max_floor:
             i.data[5] = -1
             continue
         # for every elevator in the building
         for j in b.list_elevators:
+
+            # add to running elevator- case = 1
+            if can_add_to_elevator_run(i, j) > -1:
+                best_elv=3
+                case = 1
+                mission = can_add_to_elevator_run(i, j)
+                pass
+
+            # is there an elevator that reach the src call then case = 2
+
+            # not find a place to add - add in the end case = 3
+
+
             # for the current elevator check the time to the call
             if time_check(i, j) < min_time:
                 best_elv = j.id
-                min_time = time_check(i, j)
-                on_board = int(min_time)+1
-                end_time = on_board + call_time(i, j)
+                min_time = tmp_time
+
+
+
+        if case == 1:
+            i.data[6] = mission
+
+
+
+        if case == 3:
+            i.data[6] = b.list_elevators[best_elv].calls[-1].data[6] + 1
+        on_board = math.ceil(min_time)
+        end_time = on_board + call_time(i, b.list_elevators[best_elv])
 
         # data i want to write in the csv
         i.data[5] = best_elv
@@ -47,6 +73,28 @@ def allocate(call_list: CallForElevator, b: Building, output):
         writer.writerow(i.data)
     out_file.close()
 
+
+def can_add_to_elevator_run(curr_call: CallForElevator, elev: Elevator):
+    if elev.is_empty():
+        return -1
+    for cll in elev.calls:
+        if curr_call.src < curr_call.dst and cll.src < cll.dst:
+            if cll.src < curr_call.src:
+                if time_checker_for_can_add(curr_call, cll, elev):
+                    return cll.data[6]
+        if curr_call.src > curr_call.dst and cll.src > cll.dst:
+            if cll.src > curr_call.src:
+                if time_checker_for_can_add(curr_call, cll, elev):
+                    return cll.data[6]
+    return -1
+
+
+def time_checker_for_can_add(curr_call: CallForElevator, cll: CallForElevator, elev: Elevator):
+    if cll.data[7] + elev.close_time + elev.start_time + \
+            (abs(curr_call.src - cll.src)) / elev.speed + elev.stop_time + elev.open_time > curr_call.call_time:
+        return True
+    else:
+        return False
 
 def time_check(call: CallForElevator, elev: Elevator):
     if not elev.calls:
