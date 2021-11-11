@@ -1,7 +1,7 @@
 class Building:
     def __init__(self, minFloor, maxFloor):
-        self.minFloor = minFloor
-        self.maxFloor = maxFloor
+        self.min_floor = minFloor
+        self.max_floor = maxFloor
         self.list_elvators = []
 
     def __str__(self) -> str:
