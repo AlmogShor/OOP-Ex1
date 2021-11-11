@@ -6,66 +6,67 @@ from Elevator import Elevator
 from CallForElevator import CallForElevator
 
 
-def allocate(calllist: CallForElevator, b: Building, output):
-    out_file = open(output, "w", newline="")
-    writer = csv.writer(out_file)
+def allocate(call_list: CallForElevator, b: Building, output):
+
     # mission = 0
     # time the person enter the elevator
-    onboard = 0
+    on_board = 0
     # end of call time
-    endtime = 0
+    end_time = 0
     # save the best elevator
     best_elv = -1
     # elevators id dont start with 0
-    boaz_idiot = b.list_elvators[0].id
 
     # for every call in the call list
-    for i in calllist:
+    for i in call_list:
         min_time = 1500
         # if there is a call outside the building floors
-        if i.src < b.minFloor or i.src > b.maxFloor or i.dst < b.minFloor or i.dst > b.maxFloor:
+        if i.src < b.min_floor or i.src > b.max_floor or i.dst < b.min_floor or i.dst > b.max_floor:
             i.data[5] = -1
-            writer.writerow(i.data)
             continue
         # for every elevator in the building
-        for j in b.list_elvators:
+        for j in b.list_elevators:
             # for the current elevator check the time to the call
-            if timecheck(i, j) < min_time:
+            if time_check(i, j) < min_time:
                 best_elv = j.id
-                min_time = timecheck(i, j)
-                onboard = int(min_time)+1
-                endtime = onboard + calltime(i, j)
+                min_time = time_check(i, j)
+                on_board = int(min_time)+1
+                end_time = on_board + call_time(i, j)
 
         # data i want to write in the csv
-        i.data[5] = best_elv - boaz_idiot
-        i.data[7] = onboard
-        i.data[8] = endtime
+        i.data[5] = best_elv
+        i.data[7] = on_board
+        i.data[8] = end_time
         # added call to the elevator call list
-        b.list_elvators[best_elv - boaz_idiot].calls.append(i)
+        b.list_elevators[best_elv].calls.append(i)
         # write in the csv
+
+    out_file = open(output, "w", newline="")
+    writer = csv.writer(out_file)
+    for i in call_list:
         writer.writerow(i.data)
     out_file.close()
 
 
-def timecheck(call: CallForElevator, elev: Elevator):
-    if elev.calls:
-        if elev.calls[-1].data[8] > call.callTime:
-            return elev.calls[-1].data[8] + elev.closeTime + elev.startTime + (
-                abs(elev.calls[-1].data[3] - call.src)) / elev.speed + elev.stopTime + elev.openTime
+def time_check(call: CallForElevator, elev: Elevator):
+    if not elev.calls:
+        if call.src == 0:
+            return call.call_time
+        return call.call_time + elev.close_time + elev.start_time + (
+            abs(0 - call.src)) / elev.speed + elev.stop_time + elev.open_time
+    else:
+        if elev.calls[-1].data[8] > call.call_time:
+            return elev.calls[-1].data[8] + elev.close_time + elev.start_time + (
+                abs(elev.calls[-1].data[3] - call.src)) / elev.speed + elev.stop_time + elev.open_time
         else:
             if elev.calls[-1].data[3] == call.src:
-                return call.callTime
-            return call.callTime + elev.closeTime + elev.startTime + (
-                abs(elev.calls[-1].data[3] - call.src)) / elev.speed + elev.stopTime + elev.openTime
-    else:
-        if call.src == 0:
-            return call.callTime
-        return call.callTime + elev.closeTime + elev.startTime + (
-            abs(0 - call.src)) / elev.speed + elev.stopTime + elev.openTime
+                return call.call_time
+            return call.call_time + elev.close_time + elev.start_time + (
+                abs(elev.calls[-1].data[3] - call.src)) / elev.speed + elev.stop_time + elev.open_time
 
 
-def calltime(call: CallForElevator, elev: Elevator):
-    return elev.closeTime + elev.startTime + (abs(call.dst - call.src)) / elev.speed + elev.stopTime + elev.openTime
+def call_time(call: CallForElevator, elev: Elevator):
+    return elev.close_time + elev.start_time + (abs(call.dst - call.src)) / elev.speed + elev.stop_time + elev.open_time
 
 
 def ex1(bld, calls, output):
@@ -73,29 +74,29 @@ def ex1(bld, calls, output):
     f = open(bld)
     data = json.load(f)
     # Creating a Building. Extracted from the json file
-    b = Building(minFloor=data["_minFloor"], maxFloor=data["_maxFloor"])
-    # Creating the elevtors in the building
+    b = Building(min_floor=data["_minFloor"], max_floor=data["_maxFloor"])
+    # Creating the elevators in the building
     for i in data['_elevators']:
-        elev = Elevator(id=i['_id'], speed=i['_speed'], minFloor=i['_minFloor'], maxFloor=i['_maxFloor'],
-                        closeTime=i['_closeTime'], openTime=i['_openTime'], startTime=i['_startTime'],
-                        stopTime=i['_stopTime'])
-        b.list_elvators.append(elev)
+        elev = Elevator(id=i['_id'], speed=i['_speed'], min_floor=i['_minFloor'], max_floor=i['_maxFloor'],
+                        close_time=i['_closeTime'], open_time=i['_openTime'], start_time=i['_startTime'],
+                        stop_time=i['_stopTime'])
+        b.list_elevators.append(elev)
 
     # print(B)
     # Closing the json file
     f.close()
     # Opening CSV file
     c = open(calls)
-    csvreader = csv.reader(c)
+    csv_reader = csv.reader(c)
     # Creating the callForElevators objects
     idx = 0
-    callslist = []
-    for row in csvreader:
+    call_list = []
+    for row in csv_reader:
         call = CallForElevator(row[1], row[2], row[3], idx)
         idx = +1
-        callslist.append(call)
+        call_list.append(call)
 
-    allocate(callslist, b, output)
+    allocate(call_list, b, output)
     # Closing the CSV file
     c.close()
 
