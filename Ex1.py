@@ -15,13 +15,13 @@ def allocate(calllist: CallForElevator, b: Building, output):
     # end of call time
     endtime = 0
     # save the best elevator
-    bestelv = -1
+    best_elv = -1
     # elevators id dont start with 0
-    boazidiot = b.list_elvators[0].id
+    boaz_idiot = b.list_elvators[0].id
 
     # for every call in the call list
     for i in calllist:
-        mintime = 1500
+        min_time = 1500
         # if there is a call outside the building floors
         if i.src < b.minFloor or i.src > b.maxFloor or i.dst < b.minFloor or i.dst > b.maxFloor:
             i.data[5] = -1
@@ -30,18 +30,18 @@ def allocate(calllist: CallForElevator, b: Building, output):
         # for every elevator in the building
         for j in b.list_elvators:
             # for the current elevator check the time to the call
-            if timecheck(i, j) < mintime:
-                bestelv = j.id
-                mintime = timecheck(i, j)
-                onboard = int(mintime)+1
+            if timecheck(i, j) < min_time:
+                best_elv = j.id
+                min_time = timecheck(i, j)
+                onboard = int(min_time)+1
                 endtime = onboard + calltime(i, j)
 
         # data i want to write in the csv
-        i.data[5] = bestelv - boazidiot
+        i.data[5] = best_elv - boaz_idiot
         i.data[7] = onboard
         i.data[8] = endtime
         # added call to the elevator call list
-        b.list_elvators[bestelv - boazidiot].calls.append(i)
+        b.list_elvators[best_elv - boaz_idiot].calls.append(i)
         # write in the csv
         writer.writerow(i.data)
     out_file.close()
