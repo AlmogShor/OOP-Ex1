@@ -8,16 +8,6 @@ from CallForElevator import CallForElevator
 
 
 def allocate(call_list: CallForElevator, b: Building, output):
-
-    # mission = 0
-    # time the person enter the elevator
-    on_board = 0
-    # end of call time
-    end_time = 0
-    # save the best elevator
-    best_elv = -1
-    # elevators id dont start with 0
-
     # for every call in the call list
     for i in call_list:
         min_time = sys.float_info.max
@@ -27,15 +17,32 @@ def allocate(call_list: CallForElevator, b: Building, output):
             continue
         # for every elevator in the building
         for j in b.list_elevators:
-            # for the current elevator check the time to the call
-            if time_check(i, j) < min_time:
-                best_elv = j.id
-                min_time = time_check(i, j)
-                on_board = int(min_time)+1
-                end_time = on_board + call_time(i, j)
+            on_board = -1
+            end_time = -1
+            best_elv = -1
+            mission = -1
+
+            if not j.is_empty():
+                for cll in j:
+                    if i.src < i.dst and cll.src < cll.dst:
+                        if cll.src < i.src < cll.dst:
+                            tmp_on_board = time_checker_for_can_add(i, cll, j)
+                            if tmp_on_board > 0:
+                                pass
+
+                    if i.src > i.dst and cll.src > cll.dst:
+                        if cll.src > i.src > cll.dst:
+                            tmp_on_board = time_checker_for_can_add(i, cll, j)
+                            if tmp_on_board > 0:
+                                pass
+
+
+
+
 
         # data i want to write in the csv
         i.data[5] = best_elv
+        i.data[6] = mission
         i.data[7] = on_board
         i.data[8] = end_time
         # added call to the elevator call list
@@ -49,25 +56,23 @@ def allocate(call_list: CallForElevator, b: Building, output):
     out_file.close()
 
 
-def time_check(call: CallForElevator, elev: Elevator):
-    if not elev.calls:
-        if call.src == 0:
-            return call.call_time
-        return call.call_time + elev.close_time + elev.start_time + (
-            abs(0 - call.src)) / elev.speed + elev.stop_time + elev.open_time
+def time_checker_for_can_add(curr_call: CallForElevator, cll: CallForElevator, elev: Elevator):
+    if cll.data[7] + elev.close_time + elev.start_time + \
+            (abs(curr_call.src - cll.src)) / elev.speed + elev.stop_time + elev.open_time > curr_call.call_time:
+        return cll.data[7] + elev.close_time + elev.start_time + \
+            (abs(curr_call.src - cll.src)) / elev.speed + elev.stop_time + elev.open_time
     else:
-        if elev.calls[-1].data[8] > call.call_time:
-            return elev.calls[-1].data[8] + elev.close_time + elev.start_time + (
-                abs(elev.calls[-1].data[3] - call.src)) / elev.speed + elev.stop_time + elev.open_time
-        else:
-            if elev.calls[-1].data[3] == call.src:
-                return call.call_time
-            return call.call_time + elev.close_time + elev.start_time + (
-                abs(elev.calls[-1].data[3] - call.src)) / elev.speed + elev.stop_time + elev.open_time
+        return -1
 
 
-def call_time(call: CallForElevator, elev: Elevator):
-    return elev.close_time + elev.start_time + (abs(call.dst - call.src)) / elev.speed + elev.stop_time + elev.open_time
+def current_average(curr_call: CallForElevator, elev: Elevator):
+    total_time = 0
+    sum_people = 0
+    if elev.is_empty():
+        return 0
+    for cll in elev.calls:
+        if cll.data[8] > curr_call.call_time:
+            pass
 
 
 def ex1(bld, calls, output):

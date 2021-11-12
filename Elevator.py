@@ -12,7 +12,7 @@ class Elevator:
         self.open_time = float(open_time)
         self.start_time = float(start_time)
         self.stop_time = float(stop_time)
-        self.calls = []
+        self.calls = [CallForElevator()]
 
     def __str__(self) -> str:
         return f"id:{self.id} speed:{self.speed} minFloor:{self.min_floor} maxFloor:{self.max_floor} closeTime:{self.close_time} openTime:{self.open_time} StartTime:{self.start_time} stopTime:{self.stop_time}"
