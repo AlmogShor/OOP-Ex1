@@ -7,6 +7,7 @@ from Elevator import Elevator
 from CallForElevator import CallForElevator
 
 
+# this is the new one
 def allocate(call_list: CallForElevator, b: Building, output):
     # for every call in the call list
     for i in call_list:
