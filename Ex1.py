@@ -35,13 +35,25 @@ def allocate(call_list: CallForElevator, b: Building, output):
         for j in b.list_elevators:
             if not j.is_empty():
                 for cll in j.calls:
+                    time_check = check_time_to_add(i, j, cll)
+                    if time_check == -1:
+                        continue
                     if i.src < i.dst and cll.src < cll.dst:
                         if cll.src < i.src < cll.dst:
-                            pass
-
+                                min_time = 0
+                                on_board = time_check
+                                start_move = time_check + j.close_time + j.start_time
+                                end_time = time_check + time_elev_to_dst(i, j)
+                                mission = cll.data[9]
+                                best_elv = j.idx
                     if i.src > i.dst and cll.src > cll.dst:
                         if cll.src > i.src > cll.dst:
-                            pass
+                                min_time = 0
+                                on_board = time_check
+                                start_move = time_check + j.close_time + j.start_time
+                                end_time = time_check + time_elev_to_dst(i, j)
+                                mission = cll.data[9]
+                                best_elv = j.idx
             # check time to add in the end
 
             # last case- didnt find a place to push the call so add in the end
@@ -51,7 +63,7 @@ def allocate(call_list: CallForElevator, b: Building, output):
             tmp_time = time_to_me + time_to_dst + dif
             if tmp_time < min_time:
                 on_board = math.ceil(i.call_time) + time_to_me
-                start_move = on_board + j.close_time + j.start_time
+                start_move = math.ceil(on_board + j.close_time + j.start_time)
                 end_time = math.ceil(i.call_time) + time_to_me + time_to_dst
                 min_time = tmp_time
                 best_elv = j.idx
@@ -75,6 +87,16 @@ def allocate(call_list: CallForElevator, b: Building, output):
     for i in call_list:
         writer.writerow(i.data)
     out_file.close()
+
+
+def check_time_to_add(curr_call: CallForElevator, elev: Elevator, last_call: CallForElevator):
+    if last_call.data[8] < curr_call.call_time:
+        return -1
+    tmp_time = math.ceil(last_call.data[7] + (abs(curr_call.src - last_call.src))/elev.speed + elev.stop_time + elev.open_time)
+    if tmp_time < curr_call.call_time:
+        return -1
+    return tmp_time
+
 
 
 def time_elev_to_me(curr_call: CallForElevator, elev: Elevator):
