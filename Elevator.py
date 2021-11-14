@@ -1,7 +1,4 @@
 from CallForElevator import CallForElevator
-
-
-
 class Elevator:
     def __init__(self, idx: float, speed: float, min_floor: float, max_floor: float, close_time: float,
                  open_time: float, start_time: float, stop_time: float):
@@ -13,7 +10,7 @@ class Elevator:
         self.open_time = float(open_time)
         self.start_time = float(start_time)
         self.stop_time = float(stop_time)
-        self.calls = []
+        self.calls = [CallForElevator()]
         self.floors_mng = [0]
         self.times = [0]
         self.id_mng = [0]
