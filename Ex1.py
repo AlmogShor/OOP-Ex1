@@ -33,7 +33,6 @@ def allocate(call_list: CallForElevator, b: Building, output):
                 min_time = time_check(i, j)
                 on_board = int(min_time)+1
                 end_time = on_board + call_time(i, j)
-        hello world
         # data i want to write in the csv
         i.data[5] = best_elv
         i.data[7] = on_board
