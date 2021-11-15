@@ -13,6 +13,7 @@ class Elevator:
         self.calls = [CallForElevator()]
         self.floors_mng = [0]
         self.times = [0]
+        self.dir = [0]
         self.id_mng = [0]
 
     def __str__(self) -> str:

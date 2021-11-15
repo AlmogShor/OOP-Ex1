@@ -9,92 +9,63 @@ from CallForElevator import CallForElevator
 
 
 def allocate(call_list: [CallForElevator()], b: Building, output):
-    # i.data[0] - elevator call
-    # i.data[1] - call time
-    # i.data[2] - src
-    # i.data[3] - dst
-    # i.data[4] - status irrelevant
-    # i.data[5] - elevator
-    # i.data[6] - onboard
-    # i.data[7] - start move
-    # i.data[8] - end time
-    # i.data[9] - mission
     # for every call in the call list
     for i in call_list:
-        up_or_down = None
-        if i.src < i.dst:
-            up_or_down = 1
-        else:
-            up_or_down = -1
         idx_to_add_src = 0
         idx_to_add_dst = 0
-        delay = 0
-        case = 0
+        best_elev = 0
         min_time = sys.float_info.max
-        tmp_time_to_call = 0
         # if there is a call outside the building floors
-        if i.src < b.min_floor or i.src > b.max_floor or i.dst < b.min_floor or i.dst > b.max_floor:
-            i.data[5] = -1
-            continue
         # for every elevator in the building
         for j in b.list_elevators:
-            for k in len(j.times):
-                if i.call_time > j.times[k]:
-                    continue
-                if i.call_time < j.times[k]:
-                    time_on_board = math.ceil(time_check(i, j, k-1))
-                    if j.floors_mng[k-1] == i.src:
-                        if j.times[k-1] >= i.call_time:
+            if len(j.floors_mng) == 1:
+                time_to_src = time_first_call(i, j)
+                time_from_src_to_dest = time_for_first_call_2(i, j)
+                if time_to_src + time_from_src_to_dest < min_time:
+                    best_elev = j.idx
+                    time_in_src = time_to_src
+                    time_in_dst = time_in_src + time_from_src_to_dest
+            else:
+                if j.times[-1] < i.call_time:
+                    time_to_src = check_time(i, j)
+                    time_from_src_to_dest = time_for_first_call_2(i, j)
+                    if time_to_src - i.call_time + time_from_src_to_dest < min_time:
+                        best_elev = j.idx
+                        time_in_src = time_to_src
+                        time_in_dst = time_in_src + time_from_src_to_dest
+                else:
+                    for k in len(j.floors_mng):
+                        # elev going up and call up then last and can get go to command in time
+                        if j.dir[k] == 1 and i.call_time < j.times[k] and j.floors_mng[k] < i.src:
+                            idx_to_add_src = k + 1
+                            time_to_src = times_sab(i, j, k)
+                            idx_to_add_dst = where_is_dest(i, j, k)
 
 
+                        if j.dir[k] == -1 and i.call_time < j.times[k] and j.floors_mng[k] > i.src:
+                            idx_to_add_src = k + 1
+                            time_to_src = times_sab(i, j, k)
+                            idx_to_add_dst = where_is_dest(i, j, k)
+                            time_to_dst = calc_time(i, j, idx_to_add_src, idx_to_add_src)[2]
+                            delay = calc_time(i, j, idx_to_add_src, idx_to_add_src)[3]
+
+                        if j.floors_mng[k] == i.src and i.call_time < j.times[k]:
+                            idx_to_add_src = k + 1
+                            time_to_src = j.times[k]
+                            idx_to_add_dst = where_is_dest(i, j, k)
 
 
+                        if k+1 < len(j.floors_mng):
+                            # calls between floors
+                            if j.floors_mng[k] < i.src < j.floors_mng[k + 1]:
+                                idx_to_add_src = k + 1
+                                idx_to_add_dst = where_is_dest(i, j, k)
+                                # if we can stop in time
+                            if j.floors_mng[k] < i.src < j.floors_mng[k + 1]:
+                                idx_to_add_src = k + 1
+                                idx_to_add_dst = where_is_dest(i, j, k)
+                                # if we can stop in time
 
-
-                    if j.floors_mng[k-1] < i.src < j.floors_mng[k]:
-                        if time_on_board > -1:
-                            if up_or_down == 1:
-                                new_k = k
-                                while new_k < len(j.times):
-                                    # case 1- i have dst in the list
-                                    if i.dst == j.floors_mng[new_k]:
-                                        tmp_time_to_call = j.times[new_k] - i.call_time
-                                        if tmp_time_to_call < min_time:
-                                            min_time = tmp_time_to_call
-                                            idx_to_add_src = k
-                                            case = 1
-                                    if i.dst < j.floors_mng[new_k]:
-                                        tmp_time_to_call = calculate_time_for_call(i, j) + delay
-                                        # case 2- place a call inside elev movement
-                                        if tmp_time_to_call < min_time:
-                                            min_time = tmp_time_to_call
-                                            idx_to_add_src = k
-                                            idx_to_add_dst = new_k
-                                            case = 2
-                                    if new_k < len(j.times)+1:
-                                        if j.floors_mng[new_k] < i.dst < j.floors_mng[new_k+1]:
-                                            delay = + math.ceil(j.stop_time + j.open_time) + math.ceil(j.close_time + j.start_time)
-                                            continue
-                                        if j.floors_mng < i.dst > j.floors_mng[new_k+1]:
-                                            tmp_time_to_call = calculate_time_for_call(i, j) + delay
-                                            if tmp_time_to_call < min_time:
-                                                min_time = tmp_time_to_call
-                                                idx_to_add_src = k
-                                                idx_to_add_dst = new_k
-                                                case = 3
-                                    else:
-                                        tmp_time_to_call = calculate_time_for_call(i, j) + delay
-                                        if tmp_time_to_call < min_time:
-                                            min_time = tmp_time_to_call
-                                            idx_to_add_src = k
-                                            case = 4
-                                    new_k = +1
-
-
-                    if j.floors_mng[k-1] > i.src > j.floors_mng[k]
-                        if time_on_board > -1:
-        #if we finished the for loop without break we will get into else
-        else:
 
 
 
@@ -109,25 +80,120 @@ def allocate(call_list: [CallForElevator()], b: Building, output):
     out_file.close()
 
 
-def time_check(curr_call: CallForElevator, elev: Elevator, idx):
+def calc_time(curr: CallForElevator, elev: Elevator, s_id, d_id):
     speed = elev.speed
     open_t = elev.open_time
     close_t = elev.close_time
     stop_t = elev.stop_time
     start_t = elev.start_time
-    tmp_t = elev.times[idx] + close_t + start_t + (abs(curr_call.src-elev.floors_mng[idx]))/speed + stop_t + open_t
-    if tmp_t >= curr_call.call_time:
-        return tmp_t
-    return -1
+    time_to_src = elev.times[s_id - 1] + close_t + start_t + (abs(elev.floors_mng[s_id - 1] - curr.src)) / speed + stop_t + open_t
+    if s_id == d_id:
+        time_from_src_to_dst = close_t + start_t + (abs(curr.dst - curr.src))/speed + stop_t + open_t
+        time_from_dst_to_next = close_t + start_t + (abs(curr.dst - elev.floors_mng[s_id]))/speed + stop_t + open_t
+        return [time_to_src, time_to_src + time_from_src_to_dst,time_to_src + time_from_src_to_dst + time_from_dst_to_next - elev.times[s_id]]
+    else:
+        time_from_src_to_next = close_t + start_t + (abs(curr.src - elev.floors_mng[s_id]))/speed + stop_t + open_t
+        time_in_next_src = time_to_src + time_from_src_to_next
+        delay = time_in_next_src - elev.times[s_id]
+        time_to_dst = elev.times[d_id - 1] + close_t + start_t + (abs(elev.floors_mng[d_id - 1] - curr.dst)) / speed + stop_t + open_t + delay
+        return [time_to_src, time_to_dst, delay]
+
+def where_is_dest(curr: CallForElevator, elev: Elevator, k):
+    if elev.dir[k] == 1 and curr.dir == 1:
+        new_k = k+1
+        while new_k < len(elev.floors_mng):
+            if elev.floors_mng[new_k] == curr.dst:
+                return new_k
+            if elev.dir[new_k] == -1:
+                return new_k
+            if elev.floors_mng[new_k] > curr.dst:
+                return new_k
+            if elev.floors_mng[new_k] < curr.dst:
+                new_k = +1
+        else:
+            return new_k
+    if elev.dir[k] == -1 and curr.dir == -1:
+        new_k = k+1
+        while new_k < len(elev.floors_mng):
+            if elev.floors_mng[new_k] == curr.dst:
+                return new_k
+            if elev.dir[new_k] == 1:
+                return new_k
+            if elev.floors_mng[new_k] < curr.dst:
+                return new_k
+            if elev.floors_mng[new_k] > curr.dst:
+                new_k = +1
+        else:
+            return new_k
+    if elev.dir[k] == 1 and curr.dir == -1:
+        new_k = k + 1
+        while new_k < len(elev.floors_mng):
+            if elev.floors_mng[new_k] == curr.dst:
+                return new_k
+            if elev.dir[new_k] == 1:
+                new_k = +1
+                continue
+            if elev.dir[new_k] == -1 and elev.floors_mng[new_k] < curr.dst:
+                return new_k
+            if elev.dir[new_k] == -1 and elev.floors_mng[new_k] > curr.dst:
+                new_k = +1
+        else:
+            return new_k
+    if elev.dir[k] == -1 and curr.dir == 1:
+        new_k = k + 1
+        while new_k < len(elev.floors_mng):
+            if elev.floors_mng[new_k] == curr.dst:
+                return new_k
+            if elev.dir[new_k] == -1:
+                new_k = +1
+                continue
+            if elev.dir[new_k] == 1 and elev.floors_mng[new_k] > curr.dst:
+                return new_k
+            if elev.dir[new_k] == 1 and elev.floors_mng[new_k] < curr.dst:
+                new_k = +1
+        else:
+            return new_k
 
 
-def calculate_time_for_call(curr_call: CallForElevator, elev: Elevator):
+def times_sab(curr: CallForElevator, elev: Elevator, k):
     speed = elev.speed
     open_t = elev.open_time
     close_t = elev.close_time
     stop_t = elev.stop_time
     start_t = elev.start_time
-    return math.ceil(close_t + start_t + (abs(curr_call.src - curr_call.dst))/speed + stop_t + open_t)
+    last_floor = elev.floors_mng[k]
+    return elev.times[k] + math.ceil(close_t + start_t + (abs(last_floor - curr.src))/speed + stop_t + open_t)
+
+
+def check_time(curr: CallForElevator, elev: Elevator):
+    speed = elev.speed
+    open_t = elev.open_time
+    close_t = elev.close_time
+    stop_t = elev.stop_time
+    start_t = elev.start_time
+    if curr.src == elev.floors_mng[-1]:
+        return math.ceil(curr.call_time)
+    return math.ceil(curr.call_time) + close_t + start_t + (abs(elev.floors_mng[-1] - curr.src))/speed + stop_t +open_t
+
+
+def time_first_call(curr: CallForElevator, elev: Elevator):
+    speed = elev.speed
+    open_t = elev.open_time
+    close_t = elev.close_time
+    stop_t = elev.stop_time
+    start_t = elev.start_time
+    if curr.src == 0:
+        return math.ceil(curr.call_time)
+    return math.ceil(close_t + start_t + (abs(curr.src))/speed + stop_t + open_t)
+
+
+def time_for_first_call_2(curr: CallForElevator, elev: Elevator):
+    speed = elev.speed
+    open_t = elev.open_time
+    close_t = elev.close_time
+    stop_t = elev.stop_time
+    start_t = elev.start_time
+    return math.ceil(close_t + start_t + (abs(curr.src - curr.dst))/speed + stop_t + open_t)
 
 
 def ex1(bld, calls, output):
