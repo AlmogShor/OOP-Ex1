@@ -6,8 +6,14 @@ class CallForElevator:
         self.src = int(src)
         self.dst = int(dst)
         self.idx = idx
+        self.dir = 0
+        if (src < dst):
+            self.dir = 1
+        else:
+            self.dir = -1
         self.data = ['Elevator Call', float(call_time), int(src), int(dst), 0, -1, 0, 0, 0]
 
     def __str__(self):
         print(self.call_time + ", " + self.src + ", " + self.dst)
         return ""
+
