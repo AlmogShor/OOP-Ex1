@@ -21,10 +21,6 @@ def allocate(call_list: CallForElevator, b: Building, output):
     # for every call in the call list
     for i in call_list:
         min_time = sys.float_info.max
-        # if there is a call outside the building floors
-        if i.src < b.min_floor or i.src > b.max_floor or i.dst < b.min_floor or i.dst > b.max_floor:
-            i.data[5] = -1
-            continue
         # for every elevator in the building
         for j in b.list_elevators:
             # for the current elevator check the time to the call
