@@ -1,3 +1,5 @@
+
+
 class CallForElevator:
     def __init__(self, call_time, src, dst, idx):
         self.call_time = float(call_time)
@@ -9,9 +11,3 @@ class CallForElevator:
     def __str__(self):
         print(self.call_time + ", " + self.src + ", " + self.dst)
         return ""
-
-    def up_or_down(self):
-        if self.src < self.dst:
-            return 1
-        else:
-            return -1
