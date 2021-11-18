@@ -25,8 +25,8 @@ This article purpose is to present complexity optional point of view of calculat
 There is a presentation of LOOK and SCAN algorithms that works similarly but LOOK is a bit better than SCAN. 
 
 * SCAN algorithm - is by going in one direction and handle all the calls there is at that direction and then change to the other direction and handle all the call at the other direction/
-* Look algorithm - is more efficient due to its stops. If it doesn’t have more calls at that direction he is in at a specific time it change its direction and handle the calls in the other direction.
-* SAFT algorithm - calculating the time the customer had spend in the elevator as well.
+* Look algorithm - is more efficient due to its stops. If it doesn't have more calls at that direction he is in at a specific time it change its direction and handle the calls in the other direction.
+* SAFT algorithm - calculating the time the customer had spent in the elevator as well.
 
 ####Second article
 
@@ -43,11 +43,11 @@ This article is a comparison between the five known Elevators algorithm before t
 5. SDF - Shortest Destination First 
 
 
-This comparison helps us to understand the importance of logic using and planning before one stat to לממש project at this huge size
+This comparison helps us to understand the importance of logic using and planning before one start to execute project at this huge size
 
 ####Fourth article
 
-This research is more widely speaking logically of the meaning of smart elevators. From the basics (at least today) like cyber defense for elevators and to calculating the צפי of the efficiency calls by AI algorithm and personalization of the elevators for specific clients. The whole research is about efficiency in cases there is more than one elevator, because when we have only one elevator the work would be much simpler.
+This research is more widely speaking logically of the meaning of smart elevators. From the basics (at least today) like cyber defense for elevators and to calculating the expectancy of the efficiency calls by AI algorithm and personalization of the elevators for specific clients. The whole research is about efficiency in cases there is more than one elevator, because when we have only one elevator the work would be much simpler.
 
 Bibliography:
 1. https://cdmana.com/2021/02/20210202111024127g.html
@@ -60,7 +60,7 @@ Bibliography:
 
 ## 3. The algorithm
 
-Our Algorithm is based on following every moment where is which elevator at any moment, and based on that the algorithm calculate on each call by its call_time which elevator is the bset to allocate to this specific call.
+Our Algorithm is based on following every moment where is which elevator at any moment, and based on that the algorithm calculate on each call by its call_time which elevator is the best to allocate to this specific call.
 The time calculation is based on two calculations functions.
 First the algorithm calculate when the person is get into the elevator.
 Second the algorithm calculate when the person will reach to his destination and get off the elevator.
