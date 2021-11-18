@@ -55,8 +55,9 @@ Bibliography:
 3. https://nanopdf.com/download/comparative-study-of-on-line-algorithms-for-the-elevator-scheduling_pdf
 4. https://www.bjmc.lu.lv/fileadmin/user_upload/lu_portal/projekti/bjmc/Contents/8_4_12_Robal.pdf
 5. Short video that presents in very vivid way: 
+                                    [The science Behind Elevators](https://www.youtube.com/watch?v=xOayymoIl8U)
 
-            [][The Science Behind Elevators](https://www.youtube.com/watch?v=xOayymoIl8U)
+            
 
 ## 3. The algorithm
 
