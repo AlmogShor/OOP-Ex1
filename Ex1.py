@@ -1,5 +1,6 @@
 import csv
 import json
+import math
 import sys
 
 from Building import Building
@@ -8,16 +9,12 @@ from CallForElevator import CallForElevator
 
 
 def allocate(call_list: CallForElevator, b: Building, output):
-
-    # mission = 0
     # time the person enter the elevator
     on_board = 0
     # end of call time
     end_time = 0
     # save the best elevator
     best_elv = -1
-    # elevators id dont start with 0
-
     # for every call in the call list
     for i in call_list:
         min_time = sys.float_info.max
@@ -77,8 +74,6 @@ def ex1(bld, calls, output):
                         close_time=i['_closeTime'], open_time=i['_openTime'], start_time=i['_startTime'],
                         stop_time=i['_stopTime'])
         b.list_elevators.append(elev)
-
-    # print(B)
     # Closing the json file
     f.close()
     # Opening CSV file
@@ -91,11 +86,10 @@ def ex1(bld, calls, output):
         call = CallForElevator(row[1], row[2], row[3], idx)
         idx = +1
         call_list.append(call)
-
     allocate(call_list, b, output)
     # Closing the CSV file
     c.close()
 
 
 if __name__ == '__main__':
-    ex1('data\\Ex1_input\\Ex1_Buildings\\B2.json', 'data\\Ex1_input\\Ex1_calls\\Calls_a.csv', 'out.csv')
+    ex1('data\\Ex1_input\\Ex1_Buildings\\B5.json', 'data\\Ex1_input\\Ex1_calls\\Calls_d.csv', 'out.csv')
