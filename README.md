@@ -1,7 +1,7 @@
 
-#Readme
+# Readme
 
-##preface
+## preface
 
 This is a readme for our oop-Ex1- offline elevator algorithm.
 Pls follow those instructions:
@@ -14,12 +14,12 @@ Pls follow those instructions:
 7. Run the jar file with our code to test our performance.
 8. Have fun!
 
-##2. Literature research
+## 2. Literature research
 
 Offline elevators Algorithm Optimization is one of the most discussable topics in the Computer Science Researchers.
 After we researched to learn more about the Offline Elevators Algorithm Optimization we have found few relevant and interesting article, researches and video and there is our finding:
 
-####First article
+#### First article
 
 This article purpose is to present complexity optional point of view of calculating Time Algorithms, and the differences between them. In the article there a brief summary of FCFS and SSTF – both different of a logical approach of allocating elevator. 
 There is a presentation of LOOK and SCAN algorithms that works similarly but LOOK is a bit better than SCAN. 
@@ -28,12 +28,12 @@ There is a presentation of LOOK and SCAN algorithms that works similarly but LOO
 * Look algorithm - is more efficient due to its stops. If it doesn’t have more calls at that direction he is in at a specific time it change its direction and handle the calls in the other direction.
 * SAFT algorithm - calculating the time the customer had spend in the elevator as well.
 
-####Second article
+#### Second article
 
 This article is presenting in very simplify way and dealing with more generally subject surrounding tour topic. In the article is mention that today a lot of the elevators algorithms nowadays using AI to determent which way is the best way for this specific building algorithm.
 There is even a video (source no. 5) that emphasize it and presenting a similar discussion with different types of building and elevators like our HW.
 
-####Third article
+#### Third article
 
 This article is a comparison between the five known Elevators algorithm before the current millennia:
 1. MRF-Maximum Request First
@@ -45,7 +45,7 @@ This article is a comparison between the five known Elevators algorithm before t
 
 This comparison helps us to understand the importance of logic using and planning before one stat to לממש project at this huge size
 
-####Fourth article
+#### Fourth article
 
 This research is more widely speaking logically of the meaning of smart elevators. From the basics (at least today) like cyber defense for elevators and to calculating the צפי of the efficiency calls by AI algorithm and personalization of the elevators for specific clients. The whole research is about efficiency in cases there is more than one elevator, because when we have only one elevator the work would be much simpler.
 
@@ -67,18 +67,18 @@ Second the algorithm calculate when the person will reach to his destination and
 By those two calculation on each elevator based on its current call_list we can find which elevator is the best fit to allocate it to each call.
 
 
-##4. Dependencies 
+## 4. Dependencies 
 Those are the libraries we are using in our algorithm. Please make sure you have them updated for use our algorithm correctly:
 •	sdf
 
-##5. Timetable
+## 5. Timetable
 ![TimeTable,png](TimeTable.png)
 
-##6. UML
+## 6. UML
 
-##7. How to run the algorithm and the tests
+## 7. How to run the algorithm and the tests
 
-Hoe to rum our algorithm from the CMD:
+How to rum our algorithm from the CMD:
 
 ```bash
 python3 Ex1.py <Building.json> <Calls.csv> <output.csv>
