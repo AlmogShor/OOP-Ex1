@@ -54,9 +54,9 @@ Bibliography:
 2. https://www.popularmechanics.com/technology/infrastructure/a20986/the-hidden-science-of-elevators/
 3. https://nanopdf.com/download/comparative-study-of-on-line-algorithms-for-the-elevator-scheduling_pdf
 4. https://www.bjmc.lu.lv/fileadmin/user_upload/lu_portal/projekti/bjmc/Contents/8_4_12_Robal.pdf
-5. Short video that presents in very vivid way:
+5. Short video that presents in very vivid way: 
 
-            [The Science Behind Elevators](https://www.youtube.com/watch?v=xOayymoIl8U)
+            [][The Science Behind Elevators](https://www.youtube.com/watch?v=xOayymoIl8U)
 
 ## 3. The algorithm
 
@@ -69,7 +69,10 @@ By those two calculation on each elevator based on its current call_list we can 
 
 ##4. Dependencies 
 Those are the libraries we are using in our algorithm. Please make sure you have them updated for use our algorithm correctly:
-•	sdf
+
+* csv library - [documentation](https://docs.python.org/3/library/csv.html)
+* json library - [documentation](https://docs.python.org/3/library/json.html)
+* sys library - [documentation](https://docs.python.org/3/library/sys.html)
 
 ##5. Timetable
 ![TimeTable,png](TimeTable.png)

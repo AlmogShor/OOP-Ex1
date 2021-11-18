@@ -1,6 +1,5 @@
 import csv
 import json
-import math
 import sys
 
 from Building import Building
