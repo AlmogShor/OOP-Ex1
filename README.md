@@ -87,3 +87,4 @@ To run the tests just go to the cmd and run this command line:
 ```cmd
 java -jar Ex1_checker_V1.2_obf.jar 1111,2222,3333 <Building.json> <Calls.csv> <output.csv>
 ```
+you can also run manually our tests for our algorithm and function in the file Tests.py
