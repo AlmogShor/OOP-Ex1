@@ -92,4 +92,5 @@ def ex1(bld, calls, output):
 
 
 if __name__ == '__main__':
-    ex1('data\\Ex1_input\\Ex1_Buildings\\B5.json', 'data\\Ex1_input\\Ex1_calls\\Calls_d.csv', 'out.csv')
+    input_list = sys.argv
+    ex1(input_list[0], input_list[1], input_list[2])
