@@ -86,7 +86,7 @@ Those are the libraries we are using in our algorithm. Please make sure you have
 How to rum our algorithm from the CMD:
 
 ```bash
-python3 Ex1.py <Building.json> <Calls.csv> <output.csv>
+python Ex1.py <Building.json> <Calls.csv> <output.csv>
 ```
 To run the tests just go to the cmd and run this command line:
 ```cmd
