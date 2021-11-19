@@ -76,9 +76,10 @@ Those are the libraries we are using in our algorithm. Please make sure you have
 * sys library - [documentation](https://docs.python.org/3/library/sys.html)
 
 ## 5. Timetable
-![TimeTable,png](TimeTable.png)
+![TimeTable.png](TimeTable.png)
 
 ## 6. UML
+![UML.png](UML.PNG)
 
 ## 7. How to run the algorithm and the tests
 
