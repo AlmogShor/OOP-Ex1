@@ -91,5 +91,8 @@ def ex1(bld, calls, output):
 
 
 if __name__ == '__main__':
-    input_list = sys.argv
-    ex1(input_list[0], input_list[1], input_list[2])
+    input_list = sys.argv[1:]
+    path_json = input_list[0]
+    input = input_list[1]
+    output_path = input_list[2]
+    ex1(path_json, input, output_path)
