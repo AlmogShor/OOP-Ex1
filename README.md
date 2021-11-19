@@ -1,6 +1,8 @@
 
 # Readme
 
+#### Hand in by 208483008,322697483 and 207900440
+
 ## preface
 
 This is a readme for our oop-Ex1- offline elevator algorithm.
@@ -90,6 +92,6 @@ python Ex1.py <Building.json> <Calls.csv> <output.csv>
 ```
 To run the tests just go to the cmd and run this command line:
 ```cmd
-java -jar Ex1_checker_V1.2_obf.jar 1111,2222,3333 <Building.json> <Calls.csv> <output.csv>
+java -jar Ex1_checker_V1.2_obf.jar 208483008,322697483,207900440 <Building.json> <Calls.csv> <output.csv>
 ```
 you can also run manually our tests for our algorithm and function in the file Tests.py
