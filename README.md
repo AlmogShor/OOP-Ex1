@@ -63,14 +63,17 @@ Bibliography:
 
 ## 3. The algorithm
 
-Our Algorithm is based on following every moment where is which elevator at any moment, and based on that the algorithm calculate on each call by its call_time which elevator is the best to allocate to this specific call.
-The time calculation is based on two calculations functions.
-First the algorithm calculate when the person is get into the elevator.
-Second the algorithm calculate when the person will reach to his destination and get off the elevator.
-By those two calculation on each elevator based on its current call_list we can find which elevator is the best fit to allocate it to each call.
+Our algorithm run on all the calls.
+For each call we run on all the elevators in the given building.
+Then for each elevator we calculate the approx time this elevator will arrive to the source call (depends on the previous calls).
+The call will assign to the 'fastest time to source' elevator.
 
+Each elevator have a list called "calls" where we save all the calls assigned to this elevator.
+Each call have a list called "data" where we save the assigned elevator, approx time the elevator will reach the source floor and approx time to finish the call.
+With those lists we can get for each elevator the last call we assigned to this elevator and the approx times for each call.
 
 ## 4. Dependencies 
+
 Those are the libraries we are using in our algorithm. Please make sure you have them updated for use our algorithm correctly:
 
 * csv library - [documentation](https://docs.python.org/3/library/csv.html)
